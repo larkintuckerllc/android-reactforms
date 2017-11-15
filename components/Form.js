@@ -49,7 +49,7 @@ function FormView({ handleSubmit, submitting, valid }) {
         <Field
           name="email"
           component={ValidatedInput}
-          props={{ placeholder: 'Email' }}
+          props={{ keyboardType: 'email-address', placeholder: 'Email' }}
           validate={[required, email]}
         />
         <Button
@@ -74,10 +74,10 @@ class Form extends Component {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-  handleSubmit() {
+  handleSubmit(data) {
     const { resetForm } = this.props;
     resetForm();
-    return Promise.resolve();
+    return Promise.resolve(data);
   }
   render() {
     const { handleSubmit } = this;

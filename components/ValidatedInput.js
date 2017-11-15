@@ -15,6 +15,7 @@ const ValidatedInput = ({
     onFocus,
     value,
   },
+  keyboardType,
   meta: {
     touched,
     error,
@@ -23,6 +24,7 @@ const ValidatedInput = ({
 }) => (
   <View>
     <TextInput
+      keyboardType={keyboardType}
       onBlur={onBlur}
       onChangeText={onChange}
       onFocus={onFocus}
@@ -40,6 +42,7 @@ ValidatedInput.propTypes = {
     onFocus: PropTypes.func.isRequired,
     value: PropTypes.string.isRequired,
   }).isRequired,
+  keyboardType: PropTypes.string,
   meta: PropTypes.shape({
     touched: PropTypes.bool.isRequired,
     error: PropTypes.string,
@@ -47,6 +50,7 @@ ValidatedInput.propTypes = {
   placeholder: PropTypes.string,
 };
 ValidatedInput.defaultProps = {
+  keyboardType: 'default',
   placeholder: '',
 };
 export default ValidatedInput;
