@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, reset } from 'redux-form';
+import { connect } from 'react-redux';
 import {
   Button,
   Platform,
@@ -12,6 +13,11 @@ import {
 import ValidatedInput from './ValidatedInput';
 
 const FORM = 'MY_FORM';
+const required = value => (value ? undefined : 'Required');
+const email = value =>
+  (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
+    ? 'Valid Email Address Required'
+    : undefined);
 const styles = StyleSheet.create({
   root: {
     flex: 1,
@@ -24,14 +30,30 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
-function FormView({ handleSubmit }) {
+function FormView({ handleSubmit, submitting, valid }) {
   return (
     <View style={styles.root}>
       <ScrollView style={styles.rootScroll}>
-        <Field name="firstName" component={ValidatedInput} />
-        <Field name="lastName" component={ValidatedInput} />
-        <Field name="email" component={ValidatedInput} />
+        <Field
+          name="firstName"
+          component={ValidatedInput}
+          props={{ placeholder: 'First Name' }}
+          validate={[required]}
+        />
+        <Field
+          name="lastName"
+          component={ValidatedInput}
+          props={{ placeholder: 'Last Name' }}
+          validate={[required]}
+        />
+        <Field
+          name="email"
+          component={ValidatedInput}
+          props={{ placeholder: 'Email' }}
+          validate={[required, email]}
+        />
         <Button
+          disabled={submitting || !valid}
           onPress={handleSubmit}
           title="Submit"
         />
@@ -41,13 +63,21 @@ function FormView({ handleSubmit }) {
 }
 FormView.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
+  submitting: PropTypes.bool.isRequired,
+  valid: PropTypes.bool.isRequired,
 };
 const FormRedux = reduxForm({
   form: FORM,
 })(FormView);
 class Form extends Component {
+  constructor(props) {
+    super(props);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
   handleSubmit() {
-    return Promise.resolve(this);
+    const { resetForm } = this.props;
+    resetForm();
+    return Promise.resolve();
   }
   render() {
     const { handleSubmit } = this;
@@ -58,4 +88,12 @@ class Form extends Component {
     );
   }
 }
-export default Form;
+Form.propTypes = {
+  resetForm: PropTypes.func.isRequired,
+};
+export default connect(
+  null,
+  {
+    resetForm: () => reset(FORM),
+  },
+)(Form);

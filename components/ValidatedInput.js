@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { PropTypes } from 'prop-types';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 
 const styles = StyleSheet.create({
   root: {
@@ -15,15 +15,22 @@ const ValidatedInput = ({
     onFocus,
     value,
   },
+  meta: {
+    touched,
+    error,
+  },
+  placeholder,
 }) => (
   <View>
     <TextInput
       onBlur={onBlur}
       onChangeText={onChange}
       onFocus={onFocus}
+      placeholder={placeholder}
       style={styles.root}
       value={value}
     />
+    {error !== null && touched && <Text>{error}</Text>}
   </View>
 );
 ValidatedInput.propTypes = {
@@ -33,5 +40,13 @@ ValidatedInput.propTypes = {
     onFocus: PropTypes.func.isRequired,
     value: PropTypes.string.isRequired,
   }).isRequired,
+  meta: PropTypes.shape({
+    touched: PropTypes.bool.isRequired,
+    error: PropTypes.string,
+  }).isRequired,
+  placeholder: PropTypes.string,
+};
+ValidatedInput.defaultProps = {
+  placeholder: '',
 };
 export default ValidatedInput;
